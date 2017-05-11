@@ -1,8 +1,9 @@
 require 'rubygems'
-require 'open-uri' 
+require 'open-uri'
 require 'digest/md5'
 require 'redis'
 require 'nokogiri'
+require './notifiers/_notifiers.rb'
 
 if ENV['RACK_ENV'] != 'production'
 	require 'dotenv/load'
@@ -34,7 +35,10 @@ task :check do
 	if current_hash != known_hash
 		puts "changes!"
 		puts current_hash
-		puts known_hash.empty? ? "first check" : known_hash
+		puts known_hash.nil? ? "first check" : known_hash
+
+		URL_Notifier.notify
+
 		redis.set(ENV['CHECKED_URL'], current_hash)
 	end
 end
