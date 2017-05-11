@@ -16,7 +16,13 @@ task :check do
 		next
 	end
 
-	response = open(ENV['CHECKED_URL']).read
+	begin
+		response = open(ENV['CHECKED_URL']).read
+	rescue
+		puts "checked URL is down"
+		next
+	end
+
 	
 	doc = Nokogiri.HTML(response)
 
